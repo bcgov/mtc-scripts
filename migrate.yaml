@@ -1,5 +1,7 @@
 ---
 - name: Playbook
+  roles:
+    - common
   hosts: localhost
   gather_facts: false
   vars:
@@ -8,17 +10,6 @@
     src_cluster: klab # pathfinder
     des_cluster: klab
   tasks:
-    - fail: msg="The variable 'namespace_key' is not defined or empty"
-      when: (namespace_key is not defined) or (namespace_key|length == 0)
-    
-    - fail: msg="The variable 'plan_name' is not defined or empty"
-      when: (plan_name is not defined) or (plan_name|length == 0)
-    
-    - name: Create output directory
-      file:
-        path: plans
-        state: directory
-
     - name: Switching to source cluster
       shell: |
         oc config use-context {{ src_cluster }}
@@ -43,7 +34,7 @@
       shell: |
         oc config use-context {{ des_cluster }}
     
-    - name: Netowrk policy tasks
+    - name: Network policy tasks
       include_role:
         name: netpol
 

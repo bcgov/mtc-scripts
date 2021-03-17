@@ -1,0 +1,17 @@
+---
+- fail: msg="The variable 'namespace_key' is not defined or empty"
+  when: (namespace_key is not defined) or (namespace_key|length == 0)
+
+- fail: msg="The variable 'plan_name' is not defined or empty"
+  when: (plan_name is not defined) or (plan_name|length == 0)
+
+- fail: msg="The variable 'src_cluster' is not defined or empty"
+  when: (src_cluster is not defined) or (src_cluster|length == 0)
+
+- fail: msg="The variable 'des_cluster' is not defined or empty"
+  when: (des_cluster is not defined) or (des_cluster|length == 0)
+
+- name: Create output directory for plans
+  file:
+    path: plans
+    state: directory
