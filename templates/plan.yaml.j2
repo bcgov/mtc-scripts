@@ -2,16 +2,16 @@
 apiVersion: migration.openshift.io/v1alpha1
 kind: MigPlan
 metadata:
-  name: "{{ plan_name }}-plan"
+  name: {{ plan_name }}-plan
   labels:
-    app: "{{ plan_name }}"
+    app: {{ plan_name }}
 spec:
   indirectVolumeMigration: true
   srcMigClusterRef:
-    name: "{{ src_cluster }}"
+    name: {{ src_cluster }}
     namespace: openshift-migration
   destMigClusterRef:
-    name: "{{ des_cluster }}"
+    name: {{ des_cluster }}
     namespace: openshift-migration
   migStorageRef:
     name: ocs
