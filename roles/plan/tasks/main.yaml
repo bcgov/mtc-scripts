@@ -1,0 +1,11 @@
+---
+- name: Build migration plan
+  template:
+    src: templates/plan.yaml.j2
+    dest: "plans/{{ plan_name }}.yaml"
+
+- name: Apply manifest to the cluster
+  k8s:
+    state: present
+    namespace: openshift-migration
+    src: "plans/{{ plan_name }}.yaml"

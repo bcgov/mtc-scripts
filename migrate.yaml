@@ -28,32 +28,25 @@
         api_version: v1
         kind: Namespace
         label_selectors:
-          - name = xordpe
+          - name = {{ namespace_key }}
       register: namespaces
 
-    - name: Fetch existing PVCs
+    - name: Fetch PVCs form all namespaces
       k8s_info:
         api_version: v1
         kind: PersistentVolumeClaim
         namespace: "{{ item.metadata.name }}"
       with_items: "{{ namespaces.resources }}"
       register: volumes
- 
-    - name: Build migration plan
-      template:
-        src: templates/plan.yaml.j2
-        dest: "plans/{{ plan_name }}.yaml"
 
     - name: Switching to destination cluster
       shell: |
         oc config use-context {{ des_cluster }}
-
-    - name: Apply plan manifest to the cluster
-      k8s:
-        state: present
-        namespace: openshift-migration
-        src: "plans/{{ plan_name }}.yaml"
-
-    - name: Apply network policy all namespaces
+    
+    - name: Netowrk policy tasks
       include_role:
         name: netpol
+
+    - name: Migration plan tasks
+      include_role:
+        name: plan

@@ -1,3 +1,25 @@
+---
+- name: Fetch existing Namespaces
+  k8s_info:
+    api_version: v1
+    kind: NetworkPolicy
+    label_selectors:
+      - "provisioned-by=argocd"
+  register: policies
+
+- name: Apply deny by default network policy
+  # TODO:(jl) Could check for a policy named
+  # `platform-services-controlled-deny-by-default` to be more
+  # specific.
+  when: policies.resources | length == 0
+  k8s:
+    state: present
+    namespace: "{{ item.metadata.name }}"
+    definition: "{{ lookup('template', 'templates/netpol-deny-default.yaml.j2') | from_yaml }}"
+  vars:
+    ns_name: "{{ item.metadata.name }}"
+  with_items: "{{ namespaces.resources }}"
+
 - name: Apply allow ingress network policy
   k8s:
     state: present
@@ -12,15 +34,6 @@
     state: present
     namespace: "{{ item.metadata.name }}"
     definition: "{{ lookup('template', 'templates/netpol-allow-same.yaml.j2') | from_yaml }}"
-  vars:
-    ns_name: "{{ item.metadata.name }}"
-  with_items: "{{ namespaces.resources }}"
-
-- name: Apply deny by default network policy
-  k8s:
-    state: present
-    namespace: "{{ item.metadata.name }}"
-    definition: "{{ lookup('template', 'templates/netpol-deny-default.yaml.j2') | from_yaml }}"
   vars:
     ns_name: "{{ item.metadata.name }}"
   with_items: "{{ namespaces.resources }}"
