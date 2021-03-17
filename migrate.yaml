@@ -38,10 +38,6 @@
       include_role:
         name: netpol
 
-    - name: Migration plan tasks
-      include_role:
-        name: plan
-
     - name: Migration tasks
       include_role:
-        name: migrate
+        name: plan

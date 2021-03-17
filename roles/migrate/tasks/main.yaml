@@ -1,6 +1,0 @@
----
-- name: Starting migration
-  k8s:
-    state: present
-    namespace: openshift-migration
-    definition: "{{ lookup('template', 'templates/migration.yaml.j2') | from_yaml }}"
