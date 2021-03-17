@@ -13,16 +13,3 @@ spec:
     - - "$namespace={{ ns_name }}"
   destination:
     - - "$namespace=*"
----
-kind: NetworkSecurityPolicy
-apiVersion: security.devops.gov.bc.ca/v1alpha1
-metadata:
-  namespace: "{{ ns_name }}"
-  name: any-to-external
-spec:
-  description: |
-    Allow all pods to talk to external systems
-  source:
-    - - "$namespace={{ ns_name }}"
-  destination:
-    - - "ext:network=any"

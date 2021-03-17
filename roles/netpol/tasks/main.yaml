@@ -25,11 +25,20 @@
     ns_name: "{{ item.metadata.name }}"
   with_items: "{{ namespaces.resources }}"
 
-- name: Apply Aporeto network policy
+- name: Apply Aporeto any to any network policy
   k8s:
     state: present
     namespace: "{{ item.metadata.name }}"
-    definition: "{{ lookup('template', 'templates/netpol-aporeto.yaml.j2') | from_yaml }}"
+    definition: "{{ lookup('template', 'templates/netpol-apo-any.yaml.j2') | from_yaml }}"
+  vars:
+    ns_name: "{{ item.metadata.name }}"
+  with_items: "{{ namespaces.resources }}"
+
+- name: Apply Aporeto allow ingress network policy
+  k8s:
+    state: present
+    namespace: "{{ item.metadata.name }}"
+    definition: "{{ lookup('template', 'templates/netpol-apo-ingress.yaml.j2') | from_yaml }}"
   vars:
     ns_name: "{{ item.metadata.name }}"
   with_items: "{{ namespaces.resources }}"
