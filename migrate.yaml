@@ -3,8 +3,8 @@
   hosts: localhost
   gather_facts: false
   vars:
-    plan_name: capstone
-    namespace_key: xordpe
+    plan_name: "{{ name }}"
+    namespace_key: "{{ key }}"
     src_cluster: klab # pathfinder
     des_cluster: klab
   tasks:
@@ -14,6 +14,11 @@
     - fail: msg="The variable 'plan_name' is not defined or empty"
       when: (plan_name is not defined) or (plan_name|length == 0)
     
+    - name: Create output directory
+      file:
+        path: plans
+        state: directory
+
     - name: Switching to source cluster
       shell: |
         oc config use-context {{ src_cluster }}
@@ -34,16 +39,10 @@
       with_items: "{{ namespaces.resources }}"
       register: volumes
  
-    # - name: Build and apply migration plan
-    #   k8s:
-    #     state: present
-    #     namespace: openshift-migration
-    #     definition: "{{ lookup('template', 'templates/plan.yaml.j2') | from_yaml }}"
-    
     - name: Build migration plan
       template:
         src: templates/plan.yaml.j2
-        dest: "{{ plan_name }}-plan.yaml"
+        dest: "plans/{{ plan_name }}.yaml"
 
     - name: Switching to destination cluster
       shell: |
@@ -53,4 +52,8 @@
       k8s:
         state: present
         namespace: openshift-migration
-        src: "{{ plan_name }}-plan.yaml"
+        src: "plans/{{ plan_name }}.yaml"
+
+    - name: Apply network policy all namespaces
+      include_role:
+        name: netpol
