@@ -1,0 +1,15 @@
+# Allow all pods within the current namespace to communicate
+# to one another.
+---
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  namespace: "{{ ns_name }}"
+  name: allow-same-namespace
+  labels:
+    provisioned-by: mtc-playbook
+spec:
+  podSelector:
+  ingress:
+  - from:
+    - podSelector: {}

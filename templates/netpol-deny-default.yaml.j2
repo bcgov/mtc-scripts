@@ -1,0 +1,14 @@
+# The default posture for a security first namespace is to
+# deny all traffic. If not added this rule will be added
+# by Platform Services during environment cut-over.
+---
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  namespace: "{{ ns_name }}"
+  name: deny-by-default
+  labels:
+    provisioned-by: mtc-playbook
+spec:
+  podSelector: {}
+  {# ingress: [] #}

@@ -1,0 +1,56 @@
+---
+- name: Playbook
+  hosts: localhost
+  gather_facts: false
+  vars:
+    plan_name: capstone
+    namespace_key: xordpe
+    src_cluster: klab # pathfinder
+    des_cluster: klab
+  tasks:
+    - fail: msg="The variable 'namespace_key' is not defined or empty"
+      when: (namespace_key is not defined) or (namespace_key|length == 0)
+    
+    - fail: msg="The variable 'plan_name' is not defined or empty"
+      when: (plan_name is not defined) or (plan_name|length == 0)
+    
+    - name: Switching to source cluster
+      shell: |
+        oc config use-context {{ src_cluster }}
+
+    - name: Fetch existing Namespaces
+      k8s_info:
+        api_version: v1
+        kind: Namespace
+        label_selectors:
+          - name = xordpe
+      register: namespaces
+
+    - name: Fetch existing PVCs
+      k8s_info:
+        api_version: v1
+        kind: PersistentVolumeClaim
+        namespace: "{{ item.metadata.name }}"
+      with_items: "{{ namespaces.resources }}"
+      register: volumes
+ 
+    # - name: Build and apply migration plan
+    #   k8s:
+    #     state: present
+    #     namespace: openshift-migration
+    #     definition: "{{ lookup('template', 'templates/plan.yaml.j2') | from_yaml }}"
+    
+    - name: Build migration plan
+      template:
+        src: templates/plan.yaml.j2
+        dest: "{{ plan_name }}-plan.yaml"
+
+    - name: Switching to destination cluster
+      shell: |
+        oc config use-context {{ des_cluster }}
+
+    - name: Apply plan manifest to the cluster
+      k8s:
+        state: present
+        namespace: openshift-migration
+        src: "{{ plan_name }}-plan.yaml"

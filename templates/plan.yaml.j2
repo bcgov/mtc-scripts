@@ -1,0 +1,53 @@
+---
+apiVersion: migration.openshift.io/v1alpha1
+kind: MigPlan
+metadata:
+  name: "{{ plan_name }}-plan"
+  labels:
+    app: "{{ plan_name }}"
+spec:
+  indirectVolumeMigration: true
+  srcMigClusterRef:
+    name: "{{ src_cluster }}"
+    namespace: openshift-migration
+  destMigClusterRef:
+    name: "{{ des_cluster }}"
+    namespace: openshift-migration
+  migStorageRef:
+    name: ocs
+    namespace: openshift-migration
+  namespaces:
+{% for result in volumes.results %}
+{% set namespace = result.item %}
+    - {{ namespace.metadata.name }}
+{% endfor %}
+  persistentVolumes:
+{% for result in volumes.results %}
+{% set volumes = result.resources %}
+{% for volume in volumes %}
+    - name: {{ volume.metadata.name }}
+      capacity: {{ volume.spec.resources.requests.storage }}
+      pvc:
+        name: {{ volume.metadata.name }}
+        namespace: {{ volume.metadata.namespace }}
+        accessModes:
+{% for accessMode in volume.spec.accessModes %}
+          - {{ accessMode }}
+{% endfor %}
+      selection:
+        action: copy
+        copyMethod: filesystem
+        verify: false
+{% if volume.spec.storageClassName == "nfs-backup" %}
+        storageClass: netapp-file-backup
+{% else %}
+        storageClass: {{ volume.spec.storageClassName }}
+{% endif %}
+      supported:
+        actions:
+        - skip
+        - copy
+        copyMethods:
+        - filesystem
+{% endfor %}
+{% endfor %}

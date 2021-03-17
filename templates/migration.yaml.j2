@@ -1,0 +1,13 @@
+---   
+apiVersion: migration.openshift.io/v1alpha1
+kind: MigMigration
+metadata:
+  name: "{{ plan_name }}-migration"
+  namespace: openshift-migration
+spec:
+  migPlanRef:
+    name: "{{ plan_name }}-plan" 
+    namespace: openshift-migration
+  quiescePods: true 
+  stage: false 
+  rollback: false
