@@ -7,8 +7,8 @@
   vars:
     plan_name: "{{ name }}"
     namespace_key: "{{ key }}"
-    src_cluster: klab # pathfinder
-    des_cluster: klab
+    src_cluster: pathfinder
+    des_cluster: silver
   tasks:
     - name: Switching to source cluster
       shell: |
