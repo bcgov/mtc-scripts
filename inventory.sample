@@ -1,0 +1,17 @@
+[all]
+localhost
+
+[all:vars]
+ansible_connection=local
+
+# Your v3 login details
+pathfinder_username=
+pathfinder_token=
+
+# One of these
+host_url="https://api.klab.devops.gov.bc.ca:6443"
+#host_url="https://api.silver.devops.gov.bc.ca:6443"
+
+# Your v4 login details
+host_username=
+host_token=

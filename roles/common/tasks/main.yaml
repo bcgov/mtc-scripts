@@ -11,7 +11,7 @@
 - fail: msg="The variable 'des_cluster' is not defined or empty"
   when: (des_cluster is not defined) or (des_cluster|length == 0)
 
-- name: Create output directory for plans
-  file:
-    path: plans
-    state: directory
+- name: Create kubeconfig file
+  template:
+    src: kubeconfig.j2
+    dest: /tmp/mtc-kubeconfig

@@ -3,6 +3,7 @@ apiVersion: migration.openshift.io/v1alpha1
 kind: MigPlan
 metadata:
   name: {{ plan_name }}-plan
+  namespace: openshift-migration 
   labels:
     app: {{ plan_name }}
 spec:

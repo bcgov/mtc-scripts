@@ -14,7 +14,6 @@
   when: policies.resources | length == 0
   k8s:
     state: present
-    namespace: "{{ item.metadata.name }}"
     definition: "{{ lookup('template', 'templates/netpol-deny-default.yaml.j2') | from_yaml }}"
   vars:
     ns_name: "{{ item.metadata.name }}"
@@ -23,7 +22,6 @@
 - name: Apply allow ingress network policy
   k8s:
     state: present
-    namespace: "{{ item.metadata.name }}"
     definition: "{{ lookup('template', 'templates/netpol-allow-ingress.yaml.j2') | from_yaml }}"
   vars:
     ns_name: "{{ item.metadata.name }}"
@@ -32,7 +30,6 @@
 - name: Apply allow same namespace network policy
   k8s:
     state: present
-    namespace: "{{ item.metadata.name }}"
     definition: "{{ lookup('template', 'templates/netpol-allow-same.yaml.j2') | from_yaml }}"
   vars:
     ns_name: "{{ item.metadata.name }}"
