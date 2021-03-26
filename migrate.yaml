@@ -7,7 +7,7 @@
     KUBECONFIG: /tmp/mtc-kubeconfig
   gather_facts: false
   vars:
-    plan_name: "{{ name }}"
+    plan_name: "{{ plan }}"
     namespace_key: "{{ key }}"
     src_cluster: pathfinder
     des_cluster: host
