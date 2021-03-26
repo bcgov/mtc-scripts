@@ -1,0 +1,25 @@
+---
+  - name: Playbook
+    hosts: localhost
+    vars:
+      key: "{{ license_plate }}"
+    tasks:
+    - fail: msg="The variable 'license_plate' is not defined or empty"
+      when: (key is not defined) or (key|length == 0)
+
+    - name: Create a k8s namespace
+      k8s:
+        state: present
+        definition:
+          apiVersion: v1
+          kind: Namespace
+          metadata:
+            labels:
+              name: "{{ key }}"
+              env: "{{ item }}"
+            name: "{{ key }}-{{ item }}"
+      loop:
+        - tools
+        - dev
+        - test
+        - prod
