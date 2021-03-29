@@ -29,7 +29,7 @@ spec:
 {%- endif %}
 {%- endfor %}
 
-{%- if not global.hasVolumes %}
+{%- if global.hasVolumes %}
   persistentVolumes:
 {% for result in volumes.results %}
 {% set volumes = result.resources %}
