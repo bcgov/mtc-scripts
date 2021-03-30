@@ -1,3 +1,4 @@
+{% set global = { 'hasVolumes': False } %} 
 ---
 apiVersion: migration.openshift.io/v1alpha1
 kind: MigPlan
@@ -18,10 +19,17 @@ spec:
     name: ocs
     namespace: openshift-migration
   namespaces:
-{% for result in volumes.results %}
-{% set namespace = result.item %}
+{% for namespace in namespaces.resources %}
     - {{ namespace.metadata.name }}
 {% endfor %}
+
+{%- for result in volumes.results %}
+{%- if result.resources is defined and result.resources|length %}
+{%-   if global.update({'hasVolumes': True}) %}{%- endif %}
+{%- endif %}
+{%- endfor %}
+
+{%- if global.hasVolumes %}
   persistentVolumes:
 {% for result in volumes.results %}
 {% set volumes = result.resources %}
@@ -52,3 +60,4 @@ spec:
         - filesystem
 {% endfor %}
 {% endfor %}
+{% endif %}
