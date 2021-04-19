@@ -1,6 +1,8 @@
 ---
   - name: Playbook
     hosts: localhost
+    environment:
+      KUBECONFIG: /tmp/mtc-kubeconfig
     vars:
       key: "{{ license_plate }}"
     tasks:
