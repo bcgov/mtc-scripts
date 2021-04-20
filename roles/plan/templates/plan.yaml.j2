@@ -49,6 +49,12 @@ spec:
         verify: false
 {% if volume.spec.storageClassName == "nfs-backup" %}
         storageClass: netapp-file-backup
+{% elif volume.spec.storageClassName == "gluster-block" %}
+        storageClass: netapp-block-standard
+{% elif volume.spec.storageClassName == "gluster-file" %}
+        storageClass: netapp-file-standard
+{% elif volume.spec.storageClassName == "gluster-file-db" %}
+        storageClass: netapp-file-standard
 {% else %}
         storageClass: {{ volume.spec.storageClassName }}
 {% endif %}
