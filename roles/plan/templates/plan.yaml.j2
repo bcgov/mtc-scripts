@@ -47,7 +47,7 @@ spec:
         action: copy
         copyMethod: filesystem
         verify: false
-{% if volume.spec.storageClassName is not defined %}
+{% if volume.spec.storageClassName is not defined or volume.spec.storageClassName == "" %}
         storageClass: netapp-file-standard
 {% elif volume.spec.storageClassName == "nfs-backup" %}
         storageClass: netapp-file-backup
